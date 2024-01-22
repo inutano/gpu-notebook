@@ -1,0 +1,21 @@
+services:
+  notebook:
+    image: gpu-notebook:20240111
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gpu-notebook
+    volumes:
+      - ${PWD}/src:/code
+    ports:
+      - 0.0.0.0:8888:8888
+    restart: on-failure
+    working_dir: /code
+    command: ["jupyter-lab", "--allow-root", "--ip=*"]
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
